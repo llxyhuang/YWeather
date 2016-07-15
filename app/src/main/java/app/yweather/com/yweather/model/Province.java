@@ -6,7 +6,6 @@ package app.yweather.com.yweather.model;
 public class Province {
     private int id;
     private String provinceName;
-    private String provinceCode;
 
     public void setId(int id) {
         this.id = id;
@@ -14,14 +13,6 @@ public class Province {
 
     public int getId() {
         return id;
-    }
-
-    public void setProvinceCode(String provinceCode) {
-        this.provinceCode = provinceCode;
-    }
-
-    public String getProvinceCode() {
-        return provinceCode;
     }
 
     public void setProvinceName(String provinceName) {
