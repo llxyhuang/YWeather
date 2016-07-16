@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import app.yweather.com.yweather.R;
+import app.yweather.com.yweather.service.AutoUpdateService;
 import app.yweather.com.yweather.util.HttpCallbackListener;
 import app.yweather.com.yweather.util.HttpUtil;
 import app.yweather.com.yweather.util.LogUtil;
@@ -115,6 +116,8 @@ public class WeatherActivity  extends Activity implements View.OnClickListener {
         currentDateText.setText(prefs.getString("current_date",""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
+        Intent i = new Intent(this, AutoUpdateService.class);
+        startService(i);
     }
 
     @Override
