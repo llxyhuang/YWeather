@@ -58,6 +58,17 @@ public class WeatherActivity  extends Activity implements View.OnClickListener {
         refreshWeather = (Button) findViewById(R.id.refresh_weather);
         switchCity.setOnClickListener(this);
         refreshWeather.setOnClickListener(this);
+
+        double latitude = getIntent().getDoubleExtra("Latitude",0);
+        double longitude = getIntent().getDoubleExtra("Longitude",0);
+        if(latitude != 0 && longitude != 0){
+            publishText.setText("同步中...");
+            weatherInfoLayout.setVisibility(View.INVISIBLE);
+            cityNameText.setVisibility(View.INVISIBLE);
+            quertyLocation(latitude + ":" + longitude);
+            return;
+        }
+
         String countyCode = getIntent().getStringExtra("county_code");
         if(!TextUtils.isEmpty(countyCode)){
             //有县级代码就去查询天气
@@ -66,7 +77,7 @@ public class WeatherActivity  extends Activity implements View.OnClickListener {
             cityNameText.setVisibility(View.INVISIBLE);
             queryWeatherCode(countyCode);
         }else{
-            //没有县级代码，就显示直接的天气
+            //没有县级代码，就显示上次打开的天气
             showWeather();
         }
     }
@@ -104,6 +115,13 @@ public class WeatherActivity  extends Activity implements View.OnClickListener {
                 publishText.setText("同步失败");
             }
         });
+    }
+
+    //根据经纬度查询
+    public void quertyLocation(String location){
+        String address = "https://api.thinkpage.cn/v3/weather/now.json?key=" + KEY + "&language=zh-Hans&unit=c&location=" + location;
+        LogUtil.e("WeatherActivity","location address:" + address);
+        queryFromService(address);
     }
 
     //从SharedPreferences文件中读取存储的天气信息，并显示到界面上
