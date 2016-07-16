@@ -2,7 +2,10 @@ package app.yweather.com.yweather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,12 +28,12 @@ import app.yweather.com.yweather.model.Province;
 import app.yweather.com.yweather.util.HttpCallbackListener;
 import app.yweather.com.yweather.util.HttpUtil;
 import app.yweather.com.yweather.util.LogUtil;
+import app.yweather.com.yweather.util.Utility;
 
 /**
  * Created by Administrator on 2016-07-14.
  */
 public class ChooseAreaActivity extends Activity {
-
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
@@ -59,13 +62,24 @@ public class ChooseAreaActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose_area);
+        SharedPreferences pres = PreferenceManager.getDefaultSharedPreferences(this);
+        if(pres.getBoolean("is_First",true)){
+            //如果是第一次加载，就把数据文件复制到相应的位置下
+            showProgressDialog();
+            imporDatabase();
+        }
+        if(pres.getBoolean("city_selected",false)){
+            Intent intent = new Intent(this,WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         listView = (ListView) findViewById(R.id.list_view);
         titleText = (TextView) findViewById(R.id.title_text);
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,dataList);
         listView.setAdapter(adapter);
 
-        showProgressDialog();
-        imporDatabase();
         yWeatherDB = YWeatherDB.getInstance(this);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,13 +94,19 @@ public class ChooseAreaActivity extends Activity {
                     //如果选择的是市
                     selectedCity = cityList.get(i);
                     queryCounties();
+                }else if(currentLevel == LEVEL_COUNTY){
+                    String countyEnName = countyList.get(i).getEnName();
+                    Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+                    intent.putExtra("county_code",countyEnName);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
         queryProvinces();       //加载省级数据
     }
 
-    //查询全国所有的省，优选在数据库查询，如果没有，在到服务器上查询
+    //查询全国所有的省。
     private void queryProvinces(){
         provinceList = yWeatherDB.loadProvinces();
         if(provinceList.size() > 0){
@@ -183,6 +203,11 @@ public class ChooseAreaActivity extends Activity {
             fos.write(buffere);
             is.close();
             fos.close();
+
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putBoolean("is_First",false);
+            editor.commit();
+            LogUtil.e("ChooseAreaActivity","开始复制数据");
         }catch(Exception e){
             e.printStackTrace();
             Toast.makeText(this,"查询数据库失败",Toast.LENGTH_SHORT).show();
