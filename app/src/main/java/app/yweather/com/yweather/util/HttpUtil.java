@@ -24,9 +24,9 @@ public class HttpUtil {
                     connection.setRequestMethod("GET");
                     //connection.setConnectTimeout(8000);
                    // connection.setReadTimeout(8000);
-                  connection.setRequestProperty("contentType","gb2312");
+                 // connection.setRequestProperty("contentType","gb2312");
                     InputStream in = connection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"gb2312"));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder response = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
