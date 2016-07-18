@@ -49,8 +49,8 @@ public class AutoUpdateService extends Service{
     private void updateWeather(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //先使用英文名进行更新，后面修改了数据库之后在修改为使用城市id来查询
-        String cityEnName = prefs.getString("county_EnName","");
-        String address = "https://api.thinkpage.cn/v3/weather/now.json?key=" + KEY + "&language=zh-Hans&unit=c&location=" + cityEnName;
+        String cityId = prefs.getString("county_id","");
+        String address = "https://api.thinkpage.cn/v3/weather/now.json?key=" + KEY + "&language=zh-Hans&unit=c&location=" + cityId;
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {

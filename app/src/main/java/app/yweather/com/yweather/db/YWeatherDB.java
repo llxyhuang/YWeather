@@ -49,8 +49,9 @@ public class YWeatherDB {
          if(cursor.moveToFirst()){
              do {
                  Province province = new Province();
-                 province.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                 province.setId(cursor.getString(cursor.getColumnIndex("id")));
                  province.setProvinceName(cursor.getString(cursor.getColumnIndex("province_name")));
+                 province.setEnName(cursor.getString(cursor.getColumnIndex("en_name")));
                  list.add(province);
              }while (cursor.moveToNext());
          }
@@ -59,17 +60,17 @@ public class YWeatherDB {
 
 
     //从数据库内读取某省下所有城市的信息
-    public List<City> loadCities(String provinceName){
+    public List<City> loadCities(String provinceId){
         List<City> list = new ArrayList<City>();
-        Cursor cursor = db.query("City",null,"province_name = ?",new String[]{provinceName},null,null,null);
+        Cursor cursor = db.query("City",null,"province_id = ?",new String[]{provinceId},null,null,null);
         if(cursor.moveToFirst()){
             do {
                 City city = new City();
-                city.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                city.setId(cursor.getString(cursor.getColumnIndex("id")));
                 city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
-                city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
                 city.setEnName(cursor.getString(cursor.getColumnIndex("en_name")));
-                city.setProvinceName(provinceName);
+                city.setProvinceName(cursor.getString(cursor.getColumnIndex("province_name")));
+                city.setProvinceId(provinceId);
                 list.add(city);
             }while (cursor.moveToNext());
         }
@@ -77,17 +78,17 @@ public class YWeatherDB {
     }
 
     //从数据库内读取某城市下所有的县信息
-    public List<County> loadCounties(String cityName){
+    public List<County> loadCounties(String cityId){
         List<County> list = new ArrayList<County>();
-        Cursor cursor = db.query("County",null,"city_name = ?",new String[]{String.valueOf(cityName)},null,null,null);
+        Cursor cursor = db.query("County",null,"city_id = ?",new String[]{String.valueOf(cityId)},null,null,null);
         if(cursor.moveToFirst()){
             do {
                 County county = new County();
-                county.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                county.setId(cursor.getString((cursor.getColumnIndex("id"))));
                 county.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
-                county.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
                 county.setEnName(cursor.getString(cursor.getColumnIndex("en_name")));
-                county.setCityName(cityName);
+                county.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
+                county.setCityId(cityId);
                 list.add(county);
             }while (cursor.moveToNext());
         }

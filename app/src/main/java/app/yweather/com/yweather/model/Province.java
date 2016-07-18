@@ -4,14 +4,15 @@ package app.yweather.com.yweather.model;
  * Created by Administrator on 2016-07-14.
  */
 public class Province {
-    private int id;
+    private String id;
     private String provinceName;
+    private String enName;
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -21,5 +22,13 @@ public class Province {
 
     public String getProvinceName() {
         return provinceName;
+    }
+
+    public void setEnName(String enName) {
+        this.enName = enName;
+    }
+
+    public String getEnName() {
+        return enName;
     }
 }

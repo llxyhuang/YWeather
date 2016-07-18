@@ -19,24 +19,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import app.yweather.com.yweather.R;
 import app.yweather.com.yweather.db.YWeatherDB;
 import app.yweather.com.yweather.model.City;
 import app.yweather.com.yweather.model.County;
 import app.yweather.com.yweather.model.Province;
-import app.yweather.com.yweather.util.HttpCallbackListener;
-import app.yweather.com.yweather.util.HttpUtil;
 import app.yweather.com.yweather.util.LogUtil;
-import app.yweather.com.yweather.util.Utility;
+import net.youmi.android.AdManager;
 
 /**
  * Created by Administrator on 2016-07-14.
@@ -72,6 +66,8 @@ public class ChooseAreaActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose_area);
+        AdManager.getInstance(this).init("ea320e389bf53b8b", "f85338eff4bf635a",false);
+
         isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
         SharedPreferences pres = PreferenceManager.getDefaultSharedPreferences(this);
         if (pres.getBoolean("is_First", true)) {
@@ -114,9 +110,9 @@ public class ChooseAreaActivity extends Activity {
                     selectedCity = cityList.get(i);
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
-                    String countyEnName = countyList.get(i).getEnName();
+                    String countyId = countyList.get(i).getId();
                     Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
-                    intent.putExtra("county_code", countyEnName);
+                    intent.putExtra("county_id", countyId);
                     startActivity(intent);
                     finish();
                 }
@@ -142,7 +138,7 @@ public class ChooseAreaActivity extends Activity {
 
     //查询选中的省内所有的市
     private void queryCities() {
-        cityList = yWeatherDB.loadCities(selectedProvince.getProvinceName());
+        cityList = yWeatherDB.loadCities(selectedProvince.getId());
         if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
@@ -160,7 +156,7 @@ public class ChooseAreaActivity extends Activity {
 
     //查询选中市内的所有的县
     private void queryCounties() {
-        countyList = yWeatherDB.loadCounties(selectedCity.getCityName());
+        countyList = yWeatherDB.loadCounties(selectedCity.getId());
         if (countyList.size() > 0) {
             dataList.clear();
             for (County county : countyList) {
@@ -264,7 +260,7 @@ public class ChooseAreaActivity extends Activity {
         //判断是否有SIM卡
         int absent = TelephonyManager.SIM_STATE_ABSENT;
         if (providerList.contains(LocationManager.GPS_PROVIDER) && 1 != absent) {
-            //如果gps打开，并且又sim卡，
+            //如果gps打开，并且有sim卡，
             provider = LocationManager.GPS_PROVIDER;
         } else if (providerList.contains(LocationManager.NETWORK_PROVIDER)) {
             provider = LocationManager.NETWORK_PROVIDER;

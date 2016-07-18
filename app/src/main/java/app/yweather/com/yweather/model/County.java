@@ -4,17 +4,17 @@ package app.yweather.com.yweather.model;
  * Created by Administrator on 2016-07-14.
  */
 public class County {
-    private int id;
+    private String id;
     private String countyName;
-    private String countyCode;
     private String enName;
     private String cityName;
+    private String cityId;
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -24,14 +24,6 @@ public class County {
 
     public String getCountyName() {
         return countyName;
-    }
-
-    public void setCountyCode(String countyCode) {
-        this.countyCode = countyCode;
-    }
-
-    public String getCountyCode() {
-        return countyCode;
     }
 
     public void setEnName(String enName) {
@@ -49,4 +41,13 @@ public class County {
     public String getCityName() {
         return cityName;
     }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCityId() {
+        return cityId;
+    }
 }
+

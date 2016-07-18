@@ -4,17 +4,17 @@ package app.yweather.com.yweather.model;
  * Created by Administrator on 2016-07-14.
  */
 public class City {
-    private int id;
+    private String id;
     private String cityName;
-    private String cityCode;
     private String enName;
     private String provinceName;
+    private String provinceId;
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -26,13 +26,6 @@ public class City {
         return cityName;
     }
 
-    public void setCityCode(String cityCode) {
-        this.cityCode = cityCode;
-    }
-
-    public String getCityCode() {
-        return cityCode;
-    }
 
     public void setProvinceName(String provinceName) {
         this.provinceName = provinceName;
@@ -48,5 +41,13 @@ public class City {
 
     public String getEnName() {
         return enName;
+    }
+
+    public void setProvinceId(String provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public String getProvinceId() {
+        return provinceId;
     }
 }

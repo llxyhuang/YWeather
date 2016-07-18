@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.youmi.android.banner.AdSize;
+import net.youmi.android.banner.AdView;
+
 import org.w3c.dom.Text;
 
 import app.yweather.com.yweather.R;
@@ -47,6 +50,12 @@ public class WeatherActivity  extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_layout);
+        //实例化广告条
+        AdView adView = new AdView(this, AdSize.FIT_SCREEN);
+        //获取要嵌入广告条的布局
+        LinearLayout adLayout = (LinearLayout) findViewById(R.id.adLayout);
+        adLayout.addView(adView);
+
         //初始化各控件
         weatherInfoLayout = (LinearLayout) findViewById(R.id.weather_info_layout);
         cityNameText = (TextView) findViewById(R.id.city_name);
@@ -69,13 +78,13 @@ public class WeatherActivity  extends Activity implements View.OnClickListener {
             return;
         }
 
-        String countyCode = getIntent().getStringExtra("county_code");
-        if(!TextUtils.isEmpty(countyCode)){
+        String countyId = getIntent().getStringExtra("county_id");
+        if(!TextUtils.isEmpty(countyId)){
             //有县级代码就去查询天气
             publishText.setText("同步中...");
             weatherInfoLayout.setVisibility(View.INVISIBLE);
             cityNameText.setVisibility(View.INVISIBLE);
-            queryWeatherCode(countyCode);
+            queryCountyID(countyId);
         }else{
             //没有县级代码，就显示上次打开的天气
             showWeather();
@@ -83,11 +92,11 @@ public class WeatherActivity  extends Activity implements View.OnClickListener {
     }
 
     //根据县级代码查询对应的天气
-    public void queryWeatherCode(String countyEnName){
-        String address = "https://api.thinkpage.cn/v3/weather/now.json?key=" + KEY + "&language=zh-Hans&unit=c&location=" + countyEnName;
+    public void queryCountyID(String countyId){
+        String address = "https://api.thinkpage.cn/v3/weather/now.json?key=" + KEY + "&language=zh-Hans&unit=c&location=" + countyId;
        // String address = "http://192.168.0.102/city.json";
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-        editor.putString("county_EnName",countyEnName);
+        editor.putString("county_id",countyId);
         editor.commit();
         LogUtil.e("WeatherActivity",address);
         queryFromService(address);
@@ -150,9 +159,9 @@ public class WeatherActivity  extends Activity implements View.OnClickListener {
             case R.id.refresh_weather:
                 publishText.setText("同步中...");
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                String countyEnName = prefs.getString("county_EnName","");
-                if(!TextUtils.isEmpty(countyEnName)){
-                    queryWeatherCode(countyEnName);
+                String countyId = prefs.getString("county_id","");
+                if(!TextUtils.isEmpty(countyId)){
+                    queryCountyID(countyId);
                 }
                 break;
             default:
